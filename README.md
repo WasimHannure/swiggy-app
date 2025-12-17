@@ -55,20 +55,20 @@ Content Of main.tf
 
 2 -- Content Of provider.tf
     ```bash
-        terraform {
-        required_providers {
-            aws = {
-            source  = "hashicorp/aws"
-            version = "~> 5.0"
+            terraform {
+            required_providers {
+                aws = {
+                source  = "hashicorp/aws"
+                version = "~> 5.0"
+                    }
                 }
             }
-        }
     ```
 **configure the aws provider:**
     ```bash
-        provider "aws" {
-        region = "us-east-1"     
-        }
+            provider "aws" {
+            region = "us-east-1"     
+            }
     ```
 **Step 2: Clone the Code:**
 
@@ -81,13 +81,13 @@ Content Of main.tf
 
 **Step 3: Content of install.sh:**
     ```bash
-        #!/bin/bash
-        sudo apt update -y
-        wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
-        echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
-        sudo apt update -y
-        sudo apt install temurin-17-jdk -y
-        /usr/bin/java --version
+            #!/bin/bash
+            sudo apt update -y
+            wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
+            echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
+            sudo apt update -y
+            sudo apt install temurin-17-jdk -y
+            /usr/bin/java --version
 
     ```
 
