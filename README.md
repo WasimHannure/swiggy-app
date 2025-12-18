@@ -84,12 +84,10 @@ Content Of main.tf
         ```bash
 
             #!/bin/bash
-            sudo apt update -y
-            wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
-            echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
-            sudo apt update -y
-            sudo apt install temurin-17-jdk -y
-            /usr/bin/java --version
+            sudo apt update
+            sudo apt install fontconfig openjdk-21-jre
+            java -version
+            
         ```
 
 **Step 3: Install Docker and Run the App Using a Container:**
@@ -98,9 +96,12 @@ Content Of main.tf
     
     ```bash
     
-    sudo apt update
-    sudo apt install fontconfig openjdk-21-jre
-    java -version
+    
+    sudo apt-get update
+    sudo apt-get install docker.io -y
+    sudo usermod -aG docker $USER  # Replace with your system's username, e.g., 'ubuntu'
+    newgrp docker
+    sudo chmod 777 /var/run/docker.sock
     ```
 **Phase 2: Security**
 
