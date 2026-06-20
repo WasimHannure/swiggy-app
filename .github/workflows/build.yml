@@ -32,51 +32,36 @@ jobs:
           push: true
           tags: wasimhannure/swiggy-app:latest
 
-      - name: AWS Login
-        uses: aws-actions/configure-aws-credentials@v6.1.0
+     
+      - name: Azure Login
+        uses: azure/login@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - id: install-aws-cli
-        uses: unfor19/install-aws-cli-action@v1
+      - name: Install Azure CLI
+        uses: Azure/cli@v2.2.0
         with:
-          version: 2  
+          inlineScript: |
+              az --version  
       
-      - name: Install eksctl
+      - name: Create Resource Group
         run: |
-          ARCH=amd64
-          PLATFORM=$(uname -s)_$ARCH
+          az group create --name swiggy-clone --location eastus
 
-          curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
-          tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
-
-          sudo install -m 0755 /tmp/eksctl /usr/local/bin && rm /tmp/eksctl
-          eksctl version
-
-      - name: Create EKS Cluster
+      - name: create aks cluster
         run: |
-            eksctl create cluster \
-             --name swiggy \
-            --region us-east-1 \
-            --nodegroup-name standard-workers \
-            --node-type t2.medium \
-            --nodes 1 \
-            --nodes-min 1 \
-            --nodes-max 1 \
-            --managed
+          az aks create --resource-group swiggy-clone --name swiggy-clone-aks --node-count 1 --generate-ssh-keys
               
 
-      - name: Get EKS Credentials
+      - name: Get AKS Credentials
         run: |
-            aws eks update-kubeconfig --region us-east-1 --name swiggy
+            az aks get-credentials --resource-group swiggy-clone --name swiggy-clone-aks
 
       - name: set up kubectl
         uses: azure/setup-kubectl@v4
         with:
           version: 'latest'
 
-      - name: Deploy to EKS
+      - name: Deploy to AKS
         run: |
           kubectl apply -f deployment-and-service.yml
